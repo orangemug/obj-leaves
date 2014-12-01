@@ -1,68 +1,38 @@
 var assert    = require("assert");
-var leavesMap = require("../");
+var objLeaves = require("../");
 
 function mockObj() {
   return {
-    "one": {
-      "leaf1": 1,
-      "two": {
-        "leaf2": 2
+    "one": 1,
+    "two": {
+      "three": 3,
+      "four": {
+        "five": 5
       }
     },
-    "three": {
-      "leaf3": 3
+    "six": {
+      "seven": 7
     }
   };
 }
 
 describe("obj-leaves", function() {
-  it("#each", function() {
+  it("test", function() {
     var num  = 0;
-    var rslt = {};
+    var rslt = {
+      "one": 1,
+      "two|three": 3,
+      "two|four|five": 5,
+      "six|seven": 7
+    };
     var obj = mockObj();
 
-    leavesMap.each(obj, function(k, v) {
+    objLeaves(obj, function(k, v) {
       num++;
-      rslt[k] = v;
+      assert.equal(rslt[k.join("|")], v);
     });
 
-    assert.equal(num, 3);
-    assert.equal(rslt.leaf1, 1);
-    assert.equal(rslt.leaf2, 2);
-    assert.equal(rslt.leaf3, 3);
-  });
-
-  it("#keys", function() {
-    var num  = 0;
-    var obj = mockObj();
-
-    leavesMap.keys(obj, function(k) {
-      num++;
-      return "n_"+k;
-    });
-
-    assert.equal(num, 3);
-    assert(!obj.one.leaf1);
-    assert(!obj.one.two.leaf2);
-    assert(!obj.three.leaf3);
-    assert(obj.one.n_leaf1);
-    assert(obj.one.two.n_leaf2);
-    assert(obj.three.n_leaf3);
-  });
-
-  it("#values", function() {
-    var num  = 0;
-    var obj = mockObj();
-
-    leavesMap.values(obj, function(v) {
-      num++;
-      return v+10;
-    });
-
-    assert.equal(num, 3);
-    assert.equal(obj.one.leaf1,     11);
-    assert.equal(obj.one.two.leaf2, 12);
-    assert.equal(obj.three.leaf3,   13);
+    assert.equal(num, 4);
   });
 });
 

@@ -1,39 +1,23 @@
-function each(obj, fn) {
+function objLeaves(obj, fn, path) {
   for(var k in obj) {
+    var keyPath;
     if(!obj.hasOwnProperty(k)) continue;
 
-    if(typeof(obj[k]) === "object" && !(obj[k] instanceof Array)) {
-      each(obj[k], fn);
+    if(path) {
+      keyPath = path.concat(k);
     } else {
-      fn(k, obj[k], obj);
+      keyPath = [k];
+    }
+
+    if(
+         typeof(obj[k]) === "object"
+      && !(obj[k] instanceof Array)
+    ) {
+      objLeaves(obj[k], fn, keyPath);
+    } else {
+      fn(keyPath, obj[k]);
     }
   }
 }
 
-function keys(obj, fn) {
-  var newKey;
-  each(obj, function(key, v, obj) {
-    newKey = fn(key);
-    if(newKey !== key) {
-      obj[newKey] = v;
-      delete obj[key];
-    }
-  });
-  return obj;
-}
-
-function values(obj, fn) {
-  var newVal;
-  each(obj, function(key, v, obj) {
-    newVal = fn(v);
-    if(newVal !== v) {
-      obj[key] = newVal;
-    }
-  });
-}
-
-module.exports = {
-  keys:   keys,
-  values: values,
-  each:   each
-};
+module.exports = objLeaves;
