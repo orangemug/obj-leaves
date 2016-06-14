@@ -1,7 +1,7 @@
 {
   "name": "obj-leaves",
   "description": "Get the leaves of an object and their key path",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "config": {
     "blanket": {
       "pattern": [
